@@ -1,0 +1,19 @@
+{
+  "name": "reverseproxy",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "http-proxy": "^1.18.1",
+    "@aws-sdk/client-s3": "^3.400.0"
+  }
+}

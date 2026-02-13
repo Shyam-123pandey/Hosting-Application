@@ -1,0 +1,31 @@
+
+services:
+  api-server:
+    build: ./api-server
+    container_name: api-server
+    ports:
+      - "9000:9000"
+      - "9002:9002"
+    environment:
+      AWS_ACCESS_KEY_ID: AKIASF2GBONGWDLPXOZT
+      AWS_SECRET_ACCESS_KEY: 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
+      AWS_REGION: ap-south-1,
+
+
+
+# services:
+#   redis:
+#     image: redis:7
+#     container_name: redis-logs-shyam-123
+#     ports:
+#       - "6370:6379"
+
+#   build-server:
+#     build: .
+#     container_name: build-server
+#     depends_on:
+#       - redis
+#     environment:
+#       REDIS_URL: redis://redis:6379
+#       PROJECT_ID: demo123
+
