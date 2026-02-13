@@ -22,7 +22,9 @@ npm install
 npm run prisma:generate
 
 # Setup environment variables
-# Create .env file with:
+# Copy .env.example to .env.local and fill in values
+# Example:
+# cp .env.example .env.local
 # DATABASE_URL="postgresql://user:password@host:5432/db"
 # AWS_ACCESS_KEY_ID="your-key"
 # AWS_SECRET_ACCESS_KEY="your-secret"
@@ -67,6 +69,9 @@ npm start
 ```bash
 cd BuildServer
 
+# Copy .env.example to .env.local and fill in values
+# cp .env.example .env.local
+
 # Build Docker image
 docker build -t hosting-build-server .
 
@@ -106,7 +111,7 @@ docker build -t hosting-build-server .
 
 ## Environment Variables
 
-### API Server (.env)
+### API Server (.env.example -> .env.local)
 ```
 DATABASE_URL=postgresql://user:pass@localhost:5432/hosting_db
 AWS_ACCESS_KEY_ID=AKIA...

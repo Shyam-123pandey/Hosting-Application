@@ -4,11 +4,15 @@ npm-debug.log
 yarn-error.log
 
 # Environment variables
-# .env
 .env.local
 .env.*.local
+*.md
+!README.md
 
 # IDE
+.ca.pem
+#all .md files
+ 
 .vscode/
 .idea/
 *.swp
