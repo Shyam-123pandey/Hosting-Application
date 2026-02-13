@@ -65,8 +65,8 @@ let s3Path = `${S3_BASE_PATH}/${subdomain}${req.url}`
 const s3Client = new S3Client({ 
   region: S3_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'AKIASF2GBONGWDLPXOZT',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '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'
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
   }
 })
 // Result: Proper S3 authentication ✅

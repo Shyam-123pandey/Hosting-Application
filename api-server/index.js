@@ -23,23 +23,23 @@ const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] }
 });
 const client = createClient({
-  host: "https://avnadmin:AVNS_Qvpx47TYhJBWBXMp0hO@clickhouse-3e66640b-shyampandey2625-1429.j.aivencloud.com:11319",
-  port: 11319,
-  username: "avnadmin",
-  password: "AVNS_Qvpx47TYhJBWBXMp0hO",
+  host: process.env.CLICKHOUSE_HOST,
+  port: process.env.CLICKHOUSE_PORT ? Number(process.env.CLICKHOUSE_PORT) : undefined,
+  username: process.env.CLICKHOUSE_USERNAME,
+  password: process.env.CLICKHOUSE_PASSWORD,
 });
 
 const kafka = new Kafka({
   clientId: `api-server`,
-  brokers: ["kafka-278e95b5-shyampandey2625-1429.d.aivencloud.com:11331"],
+  brokers: (process.env.KAFKA_BROKERS || "").split(",").map((broker) => broker.trim()).filter(Boolean),
   connectionTimeout: 10000,
   requestTimeout: 30000,
   ssl: {
     ca: [fs.readFileSync(path.join(__dirname, "ca.pem"), "utf-8")],
   },
   sasl: {
-    username: "avnadmin",
-    password: "AVNS_TVgmfSR1w7j7civJBPi",
+    username: process.env.KAFKA_USERNAME,
+    password: process.env.KAFKA_PASSWORD,
     mechanism: "plain",
   },
 });
@@ -65,7 +65,7 @@ io.on("connection", (socket) => {
 });
 
 const ecsClient = new ECSClient({
-  region: "ap-south-1",
+  region: process.env.AWS_REGION,
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
@@ -73,8 +73,8 @@ const ecsClient = new ECSClient({
 });
 
 const config = {
-  CLUSTER: "arn:aws:ecs:ap-south-1:149933880141:cluster/hosting-builder",
-  TASK: "arn:aws:ecs:ap-south-1:149933880141:task-definition/builder-taskhosting",
+  CLUSTER: process.env.CLUSTER,
+  TASK: process.env.TASK,
 };
 
 app.use(express.json());
@@ -134,12 +134,8 @@ app.post("/deploy", async (req, res) => {
     networkConfiguration: {
       awsvpcConfiguration: {
         assignPublicIp: "ENABLED",
-        subnets: [
-          "subnet-044025e3226bb0195",
-          "subnet-0c0207652dfedd5f9",
-          "subnet-01595d94ea65d9e72",
-        ],
-        securityGroups: ["sg-065beb2606d54449d"],
+        subnets: (process.env.ECS_SUBNETS || "").split(",").map((subnet) => subnet.trim()).filter(Boolean),
+        securityGroups: (process.env.ECS_SECURITY_GROUPS || "").split(",").map((group) => group.trim()).filter(Boolean),
       },
     },
     overrides: {

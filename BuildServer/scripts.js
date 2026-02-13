@@ -6,11 +6,13 @@ const mime = require('mime-types')
 const { Kafka } = require('kafkajs')
 const uuid = require('uuid')
 
+const S3_BUCKET = process.env.S3_BUCKET
+
 const s3Client = new S3Client({
-    region: 'ap-south-1',
+    region: process.env.AWS_REGION,
     credentials: {
-        accessKeyId: 'AKIASF2GBONGWDLPXOZT',
-        secretAccessKey: '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'
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
     }
 })
 
@@ -25,16 +27,16 @@ console.log('[env]', { PROJECT_ID, DEPLOYMENT_ID })
 
 const kafka = new Kafka({
     clientId: `api-docker`,
-    brokers: ['kafka-278e95b5-shyampandey2625-1429.d.aivencloud.com:11331'],
-     connectionTimeout: 10000,
-     requestTimeout: 30000,    
-    ssl: 
+    brokers: (process.env.KAFKA_BROKERS || '').split(',').map((broker) => broker.trim()).filter(Boolean),
+    connectionTimeout: 10000,
+    requestTimeout: 30000,
+    ssl:
     {
         ca: [fs.readFileSync(path.join(__dirname, 'ca.pem'), 'utf-8')]
     },
     sasl: {
-        username: 'avnadmin',
-        password: 'AVNS_TVgmfSR1w7j7civJBPi',
+        username: process.env.KAFKA_USERNAME,
+        password: process.env.KAFKA_PASSWORD,
         mechanism: 'plain'
     }
 })
@@ -81,7 +83,7 @@ async function init() {
             await publishLog(`uploading ${file}`)
 
             const command = new PutObjectCommand({
-                Bucket: 'newhosting-application',
+                Bucket: S3_BUCKET,
                 Key: `__outputs/${PROJECT_ID}/${file}`,
                 Body: fs.createReadStream(filePath),
                 ContentType: mime.lookup(filePath)

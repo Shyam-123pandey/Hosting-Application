@@ -8,7 +8,8 @@ import Redis from "ioredis";
 
 const PROJECT_ID = process.env.PROJECT_ID;
 const DEPLOYMENT_ID = process.env.DEPLOYMENT_ID;
-const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6370";
+const REDIS_URL = process.env.REDIS_URL;
+const S3_BUCKET = process.env.S3_BUCKET;
 
 if (!PROJECT_ID) {
   console.error("❌ PROJECT_ID not set");
@@ -21,10 +22,10 @@ publisher.on("error", (err) => {
 });
 
 const s3Client = new S3Client({
-  region: "ap-south-1", // ECS Task Role will be used
+  region: process.env.AWS_REGION, // ECS Task Role will be used
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "AKIASF2GBONGWDLPXOZT",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "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",
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   }
 });
 
@@ -55,7 +56,7 @@ async function uploadToS3(outpath) {
 
     await s3Client.send(
       new PutObjectCommand({
-        Bucket: "newhosting-application",
+        Bucket: S3_BUCKET,
         Key: s3Key,
         Body: fs.createReadStream(fullPath),
         ContentType: mime.lookup(fullPath) || "application/octet-stream",
